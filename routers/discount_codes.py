@@ -22,7 +22,7 @@ mock_db = {"brands": {
 }}
 mock_db_id_counter = 2
 
-def read_code(brand: str):
+def get_code(brand: str):
    for code in mock_db["brands"][brand]["discount_codes"]:
       if not code["claimed"]:
          code["claimed"] = True
@@ -50,7 +50,8 @@ def read_discount(brand: str):
    if brand not in mock_db["brands"]:
       raise HTTPException(status_code=404, detail="Brand not found")
 
-   code = read_code(brand)
+   # Hmm, not sure if this "reading" might be a possible source of data races?
+   code = get_code(brand)
    if not code:
       raise HTTPException(status_code=404, detail="No discount codes")
 
